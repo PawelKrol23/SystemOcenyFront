@@ -1,3 +1,8 @@
+export interface Login{
+    _username: string;
+    _password: string;
+}
+
 export interface User {
     _rola: string;
     _token: string;
