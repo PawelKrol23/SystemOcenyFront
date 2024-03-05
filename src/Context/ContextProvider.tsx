@@ -5,7 +5,7 @@ interface SOPContextProps {
   isLoggedIn: boolean;
   login: (login: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  getUserSession: () => UserSession | null; // Dodane getUserSession
+  getUserSession: () => UserSession | null; 
 }
 
 
@@ -31,9 +31,8 @@ const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => 
 
       const data = await response.json();
 
-      if (data) {
+      if (response.ok) {
         setLoggedIn(true);
-        console.log(data);
 
         const expirationTime = new Date();
         expirationTime.setTime(expirationTime.getTime() + 15 * 60 * 1000); // 15 minut
@@ -41,10 +40,10 @@ const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => 
         newData.tokenExpiration = expirationTime.getMinutes();
         document.cookie = `userSession=${JSON.stringify(newData)}; expires=${expirationTime.toUTCString()}; path=/`;
       } else {
-        console.error(data);
+        alert(`Error during login: ${data.message}`);
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      alert(`Error during login: ${error}`);
     }
   };
 
