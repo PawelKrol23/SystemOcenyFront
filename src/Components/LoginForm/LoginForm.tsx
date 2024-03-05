@@ -4,7 +4,7 @@ import { useSOP } from "../../Context/ContextProvider";
 import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
-  const { login, isLoggedIn } = useSOP(); // Dodaj isLoggedIn z kontekstu
+  const { login } = useSOP();
   const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState({ login: "", password: "" });
@@ -14,6 +14,7 @@ export const LoginForm = () => {
 
     try {
       await login(credentials.login, credentials.password);
+      navigate('/UserMainPage');
     } catch (error) {
       console.error('Error during login:', error);
     }
@@ -28,10 +29,14 @@ export const LoginForm = () => {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/UserPage');
+    const userSession = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("userSession="));
+
+    if (userSession) {
+      navigate('/UserMainPage');
     }
-  }, [isLoggedIn, navigate]);
+  }, [navigate]);
 
   return (
     <form

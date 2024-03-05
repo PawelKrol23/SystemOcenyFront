@@ -1,12 +1,12 @@
 import React from 'react';
 import { createBrowserRouter, Route, createRoutesFromElements, RouterProvider} from "react-router-dom";
-import { LoginPage, UserPage } from './Pages';
+import { LoginPage, UserMainPage } from './Pages';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route index element={<LoginPage />} />
-      <Route path="/UserPage" element={<UserPage />} />
+      <Route path="/UserMainPage" element={<UserMainPage />} />
     </Route>,
   ),
 );
