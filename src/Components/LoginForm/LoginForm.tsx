@@ -7,13 +7,13 @@ export const LoginForm = () => {
   const { login, isLoggedIn } = useSOP(); // Dodaj isLoggedIn z kontekstu
   const navigate = useNavigate();
 
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const [credentials, setCredentials] = useState({ login: "", password: "" });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      await login(credentials.username, credentials.password);
+      await login(credentials.login, credentials.password);
     } catch (error) {
       console.error('Error during login:', error);
     }
@@ -37,6 +37,11 @@ export const LoginForm = () => {
     <form
       onSubmit={handleSubmit}
       style={{
+        border: "1px solid rgba(29, 55, 78, 0.3)",
+        paddingTop: "5rem",
+        borderRadius: "8px",
+        width: "20rem",
+        height: "20rem",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -46,11 +51,11 @@ export const LoginForm = () => {
         label="Nazwa użytkownika"
         type="text"
         required={true}
-        name="username"
+        name="login"
         variant="outlined"
         margin="normal"
         color="secondary"
-        value={credentials.username}
+        value={credentials.login}
         onChange={handleChange}
       />
       <TextField

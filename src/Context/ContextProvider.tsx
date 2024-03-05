@@ -1,10 +1,14 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { UserSession } from '../Interfaces/UserType';
 
 interface SOPContextProps {
   isLoggedIn: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (login: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  getUserSession: () => UserSession | null; // Dodane getUserSession
 }
+
+
 
 const SOPContext = createContext<SOPContextProps | undefined>(undefined);
 
@@ -15,23 +19,29 @@ interface SOPContextProviderProps {
 const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
 
-  const login = async (username: string, password: string) => {
+  const login = async (login: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:3001/login', {
+      const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ login, password }),
       });
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data) {
         setLoggedIn(true);
-        console.log(data.message); 
+        console.log(data);
+
+        const expirationTime = new Date();
+        expirationTime.setTime(expirationTime.getTime() + 15 * 60 * 1000); // 15 minut
+        const newData = data;
+        newData.tokenExpiration = expirationTime.getMinutes();
+        document.cookie = `userSession=${JSON.stringify(newData)}; expires=${expirationTime.toUTCString()}; path=/`;
       } else {
-        console.error(data.message);
+        console.error(data);
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -39,28 +49,20 @@ const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => 
   };
 
   const logout = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    setLoggedIn(false);
+    document.cookie = 'userSession=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  };
 
-      const data = await response.json();
-
-      if (data.success) {
-        setLoggedIn(false);
-      } else {
-        console.error(data.message);
-      }
-    } catch (error) {
-      console.error('Error during logout:', error);
+  const getUserSession = (): UserSession | null => {
+    const cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)userSession\s*=\s*([^;]*).*$)|^.*$/, '$1');
+    if (cookieValue) {
+      return JSON.parse(cookieValue);
     }
+    return null;
   };
 
   return (
-    <SOPContext.Provider value={{ isLoggedIn, login, logout }}>
+    <SOPContext.Provider value={{ isLoggedIn, login, logout, getUserSession }}>
       {children}
     </SOPContext.Provider>
   );

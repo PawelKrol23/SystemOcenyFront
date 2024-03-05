@@ -18,3 +18,19 @@ export interface Pracownik {
     _stanowiskoNazwa: string;
     _rodzajDzialalnosciNazwa: string;
 }
+
+export interface UserSession {
+    rola: string;
+    token: string;
+    pracownik: {
+      idPracownika: number;
+      imie: string;
+      nazwisko: string;
+      emailSluzbowy: string;
+      stopienNaukowyNazwa: string;
+      stanowiskoNazwa: string;
+      rodzajDzialalnosciNazwa: string;
+    };
+    tokenExpiration: string;
+  }
+  
