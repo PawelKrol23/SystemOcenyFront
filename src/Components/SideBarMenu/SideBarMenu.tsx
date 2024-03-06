@@ -12,27 +12,31 @@ import { ListSubheader } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import GroupsIcon from '@mui/icons-material/Groups';
+import { useSOP } from '../../Context/ContextProvider';
 
 
 export const SideBarMenu = () => {
-  const [open, setOpen] = React.useState(true);
-  const [subOpen, setsubOpen] = React.useState(true);
-  const navigate = useNavigate();
+    const [open, setOpen] = React.useState(true);
+    const [subOpen, setsubOpen] = React.useState(true)
+    const { getUserSession } = useSOP();
+    const userSession = getUserSession();
+    const hasSub = userSession?.czyMaPodwladnych;
+    const navigate = useNavigate();
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
+    const handleClick = () => {
+        setOpen(!open);
+    };
 
-  const handleSubClick = () => {
-    setsubOpen(!subOpen);
-  };
+    const handleSubClick = () => {
+        setsubOpen(!subOpen);
+    };
 
-  const handleHistoryClick = () => {
-    navigate("/UserAchivPage")
-  };
-  const handleMainClick = () => {
-    navigate("/UserMainPage")
-  };
+    const handleHistoryClick = () => {
+        navigate("/HistoriaOsiagniec")
+    };
+    const handleMainClick = () => {
+        navigate("/UserMainPage")
+    };
 
   return (
     <List
@@ -75,13 +79,15 @@ export const SideBarMenu = () => {
           </ListItemButton>
         </List>
       </Collapse>
-      <ListItemButton onClick={handleSubClick}>
-        <ListItemIcon>
+        {hasSub ? (
+        <ListItemButton onClick={handleSubClick}>
+            <ListItemIcon>
             <GroupsIcon color='primary'/>
-        </ListItemIcon>
-        <ListItemText primary="Podwładni" />
-        {!subOpen ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
+            </ListItemIcon>
+            <ListItemText primary="Podwładni" />
+            {!subOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        ) : null}
       <Collapse in={!subOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 4 }}>
@@ -93,5 +99,6 @@ export const SideBarMenu = () => {
         </List>
       </Collapse>
     </List>
+       
   );
 }
