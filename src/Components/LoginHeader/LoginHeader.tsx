@@ -11,7 +11,7 @@ export const LoginHeader = () => {
       backgroundColor: "#012404",
       margin: "0",
     }}>
-      <img src={PbLogo} alt={"pb logo"} />
+      <img src={PbLogo} alt={"pb logo"} style={{transform: "scale(0.8)"}} />
     </header>
   )
 }
