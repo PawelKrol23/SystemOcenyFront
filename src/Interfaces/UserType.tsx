@@ -32,5 +32,16 @@ export interface UserSession {
       rodzajDzialalnosciNazwa: string;
     };
     tokenExpiration: string;
+    czyMaPodwladnych: boolean;
+  }
+
+  export interface Achievement{
+    idOsiagniecia: number;
+    nazwa: string;
+    iloscPunktow: number;
+    data: Date;
+    czyZatwierdzone: boolean;
+    podKategoriaNazwa: string;
+    idWniosku: number;
   }
   
