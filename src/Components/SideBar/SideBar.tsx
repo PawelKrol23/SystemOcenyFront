@@ -2,6 +2,7 @@ import { colors } from "../../Theme/variables";
 import TempLogo from "../../Assets/TempLogo.png";
 import TempUser from "../../Assets/TempUser.png";
 import { useSOP } from "../../Context/ContextProvider"; 
+import { SideBarMenu } from "..";
 
 export const SideBar = () => {
   const { getUserSession } = useSOP();
@@ -35,6 +36,7 @@ export const SideBar = () => {
             </div>
         </div>
       )}
+      <SideBarMenu></SideBarMenu>
     </div>
   );
 };
