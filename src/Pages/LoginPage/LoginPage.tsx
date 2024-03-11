@@ -1,7 +1,7 @@
 import { LoginForm } from "../../Components/";
 import { LoginHeader } from "../../Components/LoginHeader/LoginHeader.tsx";
 
-export function LoginPage() {
+export const LoginPage = () => {
   return (
     <>
       <LoginHeader />
