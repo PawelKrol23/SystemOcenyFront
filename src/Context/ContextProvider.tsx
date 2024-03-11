@@ -25,7 +25,7 @@ const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => 
 
     if (userSession && userSession.token) {
       try {
-        const response = await fetch('http://localhost:8080/Osiagniecia', {
+        const response = await fetch('http://localhost:8080/osiagniecia', {
           method: 'GET',
           headers: {
             'Accept': '*/*',

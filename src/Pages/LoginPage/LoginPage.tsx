@@ -1,6 +1,6 @@
 import { LoginForm } from "../../Components/";
 
-export function LoginPage() {
+export const LoginPage = () => {
   return (
     <div
       style={{
