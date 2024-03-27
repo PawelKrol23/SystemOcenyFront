@@ -18,6 +18,7 @@
     import { Achievement } from '../../Interfaces/UserType';
     import TableHead from '@mui/material/TableHead';
     import { colors } from '../../Theme/variables';
+    import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 
     interface TablePaginationActionsProps {
@@ -30,24 +31,29 @@
     ) => void;
     }
 
-    interface Column {
-        id: 'ID Osiagniecia' | 'Nazwa' | 'Czy Zatwierdzone?';
-        label: string;
-        minWidth?: number;
-        align?: 'center' | 'left' | 'right';
-        format?: (value: number) => string;
-      }
-      
-    const columns: readonly Column[] = [
-        { id: 'ID Osiagniecia', label: 'ID Osiagniecia', minWidth: 100, align: 'left'},
-        { id: 'Nazwa', label: 'Nazwa', minWidth: 150, align: 'left' },
-        {
-          id: 'Czy Zatwierdzone?',
-          label: 'Czy Zatwierdzone?',
-          minWidth: 70,
-          align: 'center',
+    const columns: GridColDef[] = [
+        { 
+            field: 'idOsiagniecia',
+            headerName: 'ID Osiagniecia',
+            width: 160,
+            headerAlign: 'center',
+            align: 'center',
         },
-      ];
+        { 
+            field: 'nazwa',
+            headerName: 'Nazwa',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        { 
+            field: 'czyZatwierdzone',
+            headerName: 'Czy Zatwierdzone?',
+            width: 160,
+            headerAlign: 'center',
+            align: 'center',
+        },
+    ];
 
     function TablePaginationActions(props: TablePaginationActionsProps) {
     const theme = useTheme();
@@ -146,59 +152,20 @@
     };
 
     return (
-        <TableContainer component={Paper} sx={{marginRight:"50px"}}>
-        <Table sx={{ minWidth: 500, background: colors.primary}} aria-label="custom pagination table">
-        <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-            <TableBody>
-            {(rowsPerPage > 0
-                ? rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : rows
-            )?.map((row) => (
-                <TableRow key={row.idOsiagniecia}>
-                <TableCell style={{ width: 160 }} align="left">
-                    {row.idOsiagniecia}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                    {row.nazwa}
-                </TableCell>
-                <TableCell style={{ width: 160 }} align="center">
-                    {row.czyZatwierdzone ? 'Tak' : 'Nie'}
-                </TableCell>
-                </TableRow>
-            ))}
-            {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-                </TableRow>
-            )}
-            </TableBody>
-            <TableFooter>
-            <TableRow>
-                <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                colSpan={3}
-                count={rows?.length || 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-                />
-            </TableRow>
-            </TableFooter>
-        </Table>
-        </TableContainer>
+        <div>
+        <DataGrid sx={{ minWidth: 500, background: colors.primary}}
+            rows={rows?.map((row, index) => ({ id: index, ...row })) || []}
+            columns={columns}
+            initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
+                },
+              }}
+            pageSizeOptions={[5, 10, 25]} 
+            pagination
+        />
+    </div>
     );
     };
