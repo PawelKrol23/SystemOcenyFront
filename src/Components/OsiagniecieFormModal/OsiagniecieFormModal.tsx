@@ -19,7 +19,7 @@ export interface OsiagniecieFormModalProps {
   onClose: () => void
 }
 
-export default function OsiagniecieFormModal (props: OsiagniecieFormModalProps) {
+export const OsiagniecieFormModal = (props: OsiagniecieFormModalProps) => {
   
   return (
     <div>
