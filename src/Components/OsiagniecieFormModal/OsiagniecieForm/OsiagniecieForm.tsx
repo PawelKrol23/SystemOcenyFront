@@ -3,6 +3,9 @@ import { TextField, Button, InputLabel, FormControl, Select, SelectChangeEvent }
 import MenuItem from "@mui/material/MenuItem";
 import { useSOP } from "../../../Context/ContextProvider.tsx";
 import { Podkategoria } from "../../../Interfaces/UserType.tsx";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 
 export const OsiagniecieForm = () => {
   const [formData, setFormData] = useState({
@@ -80,6 +83,9 @@ export const OsiagniecieForm = () => {
           ))}
         </Select>
       </FormControl>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker />
+      </LocalizationProvider>
       <Button type="submit" variant="contained" color="success" fullWidth>
         Submit
       </Button>
