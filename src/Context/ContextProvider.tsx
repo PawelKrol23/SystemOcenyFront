@@ -19,6 +19,12 @@ interface SOPContextProviderProps {
 const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
   const [AllAchievements, setAllAchievements] = useState<Achievement[]>([]);
+  
+  const getUserAllPodkategorias = async () => {
+    const userSession = getUserSession();
+    
+    
+  }
 
   const getUserAllAchievements = async () => {
     const userSession = getUserSession();
