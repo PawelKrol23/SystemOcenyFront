@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, InputLabel, FormControl, Select, SelectChangeEvent } from '@mui/material';
 import MenuItem from "@mui/material/MenuItem";
+import { useSOP } from "../../../Context/ContextProvider.tsx";
+import { Podkategoria } from "../../../Interfaces/UserType.tsx";
 
 export const OsiagniecieForm = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,17 @@ export const OsiagniecieForm = () => {
     iloscPunktow: 0,
     podkategoria: '',
   });
+  const { getUserAllPodkategorias } = useSOP();
+  const [AllPodkategorias, setAllPodkategorias] = useState<Podkategoria[] | null>([]);
+  
+  const setPodkategorias = async () => {
+    const podkategorias = await getUserAllPodkategorias();
+    setAllPodkategorias(podkategorias);
+  };
+  
+  React.useEffect(() => {
+    setPodkategorias();
+  }, []);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -62,9 +75,9 @@ export const OsiagniecieForm = () => {
           label="Podkategoria"
           onChange={handleSelectChange}
         >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {AllPodkategorias?.map((podkategoria) => (
+            <MenuItem value={podkategoria.nazwa}>{podkategoria.nazwa}</MenuItem>
+          ))}
         </Select>
       </FormControl>
       <Button type="submit" variant="contained" color="success" fullWidth>
