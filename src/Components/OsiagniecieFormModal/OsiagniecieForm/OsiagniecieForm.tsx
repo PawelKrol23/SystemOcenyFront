@@ -6,12 +6,15 @@ import { Podkategoria } from "../../../Interfaces/UserType.tsx";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
+import AddIcon from "@mui/icons-material/Add";
+import * as dayjs from "dayjs";
 
 export const OsiagniecieForm = () => {
   const [formData, setFormData] = useState({
     nazwa: '',
     iloscPunktow: 0,
     podkategoria: '',
+    data: new Date()
   });
   const { getUserAllPodkategorias } = useSOP();
   const [AllPodkategorias, setAllPodkategorias] = useState<Podkategoria[] | null>([]);
@@ -45,6 +48,17 @@ export const OsiagniecieForm = () => {
       podkategoria: event.target.value,
     }));
   };
+  
+  const handleDatePickerChange = (date: dayjs.Dayjs | null) => {
+    if(date) {
+      setFormData((prevState) => {
+        return {
+          ...prevState,
+          data: date.toDate()
+        }
+      })
+    }
+  }
   
   return (
     <form onSubmit={handleSubmit}>
@@ -84,10 +98,23 @@ export const OsiagniecieForm = () => {
         </Select>
       </FormControl>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker />
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "0.5rem",
+          marginBottom: "0.5rem",
+          width: "100%"
+        }}>
+          <DatePicker onChange={handleDatePickerChange}/>
+        </div>
       </LocalizationProvider>
-      <Button type="submit" variant="contained" color="success" fullWidth>
-        Submit
+      <Button variant="contained" color="success" startIcon={<AddIcon />} type={"submit"} fullWidth
+       style={{
+         margin: "0.5rem auto",
+         fontWeight: "bold"
+       }}>
+        Dodaj
       </Button>
     </form>
   );
