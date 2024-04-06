@@ -9,14 +9,18 @@ import { DatePicker } from "@mui/x-date-pickers";
 import AddIcon from "@mui/icons-material/Add";
 import * as dayjs from "dayjs";
 
-export const OsiagniecieForm = () => {
+export interface OsiagniecieFormProps {
+  afterSubmit: () => void
+}
+
+export const OsiagniecieForm = (props: OsiagniecieFormProps) => {
   const [formData, setFormData] = useState({
     nazwa: '',
     iloscPunktow: 0,
     podkategoria: '',
     data: new Date()
   });
-  const { getUserAllPodkategorias } = useSOP();
+  const { getUserAllPodkategorias, getUserSession } = useSOP();
   const [AllPodkategorias, setAllPodkategorias] = useState<Podkategoria[] | null>([]);
   
   const setPodkategorias = async () => {
@@ -36,10 +40,52 @@ export const OsiagniecieForm = () => {
     }));
   };
   
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
+    const userSession = getUserSession();
+    if(!userSession || !userSession.token) {
+      alert(`User not logged in`);
+      return;
+    }
+    
+    try {
+      const response = await fetch('http://localhost:8080/osiagniecie', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userSession.token}`,
+        },
+        body: JSON.stringify({
+          nazwa: formData.nazwa,
+          iloscPunktow: formData.iloscPunktow,
+          podKategoria: formData.podkategoria,
+          data: formData.data.getTime(),
+          zatwierdzone: false,
+          pracownikDTOList: [
+            {
+              id: userSession.pracownik.id,
+              imie: userSession.pracownik.imie,
+              nazwisko: userSession.pracownik.nazwisko,
+              email: userSession.pracownik.email,
+              stopienNaukowy: userSession.pracownik.stopienNaukowy,
+              stanowisko: userSession.pracownik.stanowisko,
+              dataOstatniejOceny: null,
+              grupa: userSession.pracownik.grupa,
+            }
+          ]
+        }),
+      });
+      
+      const data = await response.text();
+      console.log(data)
+      if (response.ok) {
+        props.afterSubmit()
+      } else {
+        alert(`Error during submit: ${data}`);
+      }
+    } catch (error) {
+      alert(`Error during submit: ${error}`);
+    }
   };
   
   const handleSelectChange = (event: SelectChangeEvent) => {
@@ -50,6 +96,7 @@ export const OsiagniecieForm = () => {
   };
   
   const handleDatePickerChange = (date: dayjs.Dayjs | null) => {
+    console.log(date)
     if(date) {
       setFormData((prevState) => {
         return {
@@ -57,6 +104,7 @@ export const OsiagniecieForm = () => {
           data: date.toDate()
         }
       })
+      console.log(formData.data)
     }
   }
   
@@ -93,7 +141,7 @@ export const OsiagniecieForm = () => {
           onChange={handleSelectChange}
         >
           {AllPodkategorias?.map((podkategoria) => (
-            <MenuItem value={podkategoria.nazwa}>{podkategoria.nazwa}</MenuItem>
+            <MenuItem key={podkategoria.idPodKategorii} value={podkategoria.nazwa}>{podkategoria.nazwa}</MenuItem>
           ))}
         </Select>
       </FormControl>

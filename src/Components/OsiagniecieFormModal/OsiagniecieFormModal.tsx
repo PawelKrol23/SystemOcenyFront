@@ -30,7 +30,7 @@ export const OsiagniecieFormModal = (props: OsiagniecieFormModalProps) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <OsiagniecieForm/>
+          <OsiagniecieForm afterSubmit={props.onClose}/>
         </Box>
       </Modal>
     </div>
