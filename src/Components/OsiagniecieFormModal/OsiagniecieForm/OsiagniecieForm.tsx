@@ -7,7 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import AddIcon from "@mui/icons-material/Add";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 export interface OsiagniecieFormProps {
   afterSubmit: () => void
@@ -19,6 +19,12 @@ export const OsiagniecieForm = (props: OsiagniecieFormProps) => {
     iloscPunktow: 0,
     podkategoria: '',
     data: new Date()
+  });
+  const [errorForm, setErrorForm] = useState({
+    nazwa: false,
+    iloscPunktow: false,
+    podkategoria: false,
+    data: false
   });
   const { getUserAllPodkategorias, getUserSession } = useSOP();
   const [AllPodkategorias, setAllPodkategorias] = useState<Podkategoria[] | null>([]);
@@ -39,6 +45,25 @@ export const OsiagniecieForm = (props: OsiagniecieFormProps) => {
       [name]: value,
     }));
   };
+  
+  const handleNazwaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prevData) => ({
+      ...prevData,
+      nazwa: value,
+    }));
+    if(value.length < 1 || value.length > 250) {
+      setErrorForm((prevData) => ({
+        ...prevData,
+        nazwa: true,
+      }))
+    } else {
+      setErrorForm((prevData) => ({
+        ...prevData,
+        nazwa: false,
+      }))
+    }
+  }
   
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -115,10 +140,12 @@ export const OsiagniecieForm = (props: OsiagniecieFormProps) => {
         label="Nazwa"
         name="nazwa"
         value={formData.nazwa}
-        onChange={handleChange}
+        onChange={handleNazwaChange}
         margin="normal"
         variant="outlined"
         color={"info"}
+        error={errorForm.nazwa}
+        helperText={ errorForm.nazwa ? "Długość nazwy musi być z przedziału od 1 do 250 znaków" : ""}
       />
       <TextField
         fullWidth
@@ -154,7 +181,7 @@ export const OsiagniecieForm = (props: OsiagniecieFormProps) => {
           marginBottom: "0.5rem",
           width: "100%"
         }}>
-          <DatePicker onChange={handleDatePickerChange}/>
+          <DatePicker onChange={handleDatePickerChange} value={dayjs(formData.data)}/>
         </div>
       </LocalizationProvider>
       <Button variant="contained" color="success" startIcon={<AddIcon />} type={"submit"} fullWidth
