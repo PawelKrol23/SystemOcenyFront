@@ -1,13 +1,15 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { Achievement, UserSession } from '../Interfaces/UserType';
+import { Achievement, Podkategoria, UserSession } from '../Interfaces/UserType';
 
 interface SOPContextProps {
   isLoggedIn: boolean;
   AllAchievements: Achievement[];
+  AllPodkategorias: Podkategoria[];
   login: (login: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   getUserAllAchievements: () => Promise<Achievement[] | null>;
-  getUserSession: () => UserSession | null; 
+  getUserSession: () => UserSession | null;
+  getUserAllPodkategorias: () => Promise<Podkategoria[] | null>;
 }
 
 const SOPContext = createContext<SOPContextProps | undefined>(undefined);
@@ -19,6 +21,36 @@ interface SOPContextProviderProps {
 const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
   const [AllAchievements, setAllAchievements] = useState<Achievement[]>([]);
+  const [AllPodkategorias, setAllPodkategorias] = useState<Podkategoria[]>([]);
+  
+  const getUserAllPodkategorias = async () => {
+    const userSession = getUserSession();
+    
+    if(!userSession || !userSession.token) {
+      return null;
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:8080/podkategoriaGrupa/${userSession.pracownik.grupa}`, {
+        method: 'GET',
+        headers: {
+          'Accept': '*/*',
+          'Authorization': `Bearer ${userSession.token}`,
+        },
+      });
+      
+      const data = await response.json()
+      
+      if(response.ok) {
+        return data;
+      } else {
+        alert(`Error fetching achievements: ${data.message}`);
+        return null;
+      }
+    } catch (e) {
+      alert(`Error during login: ${e}`);
+    }
+  }
 
   const getUserAllAchievements = async () => {
     const userSession = getUserSession();
@@ -75,6 +107,11 @@ const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => 
         if (achievements) {
           setAllAchievements(achievements);
         }
+        
+        const podkategorias = await getUserAllPodkategorias();
+        if (podkategorias) {
+          setAllPodkategorias(podkategorias);
+        }
       } else {
         alert(`Error during login: ${data.message}`);
       }
@@ -97,7 +134,7 @@ const SOPContextProvider: React.FC<SOPContextProviderProps> = ({ children }) => 
   };
 
   return (
-    <SOPContext.Provider value={{ isLoggedIn, AllAchievements, login, logout, getUserSession, getUserAllAchievements }}>
+    <SOPContext.Provider value={{ isLoggedIn, AllAchievements, AllPodkategorias, login, logout, getUserSession, getUserAllAchievements, getUserAllPodkategorias }}>
       {children}
     </SOPContext.Provider>
   );

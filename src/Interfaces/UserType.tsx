@@ -23,13 +23,13 @@ export interface UserSession {
     rola: string;
     token: string;
     pracownik: {
-      idPracownika: number;
+      id: number;
       imie: string;
       nazwisko: string;
-      emailSluzbowy: string;
-      stopienNaukowyNazwa: string;
-      stanowiskoNazwa: string;
-      rodzajDzialalnosciNazwa: string;
+      email: string;
+      stopienNaukowy: string;
+      stanowisko: string;
+      grupa: string;
     };
     tokenExpiration: string;
     czyMaPodwladnych: boolean;
@@ -44,4 +44,11 @@ export interface UserSession {
     podKategoriaNazwa: string;
     idWniosku: number;
   }
-  
+
+  export interface Podkategoria {
+    idPodKategorii: number;
+    maxPunktow: number;
+    minPunktow: number;
+    idGrupy: number;
+    nazwa: string;
+  }

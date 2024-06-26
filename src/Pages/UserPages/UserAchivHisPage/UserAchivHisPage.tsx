@@ -1,8 +1,18 @@
-import { UserAchivHisTable } from "../../../Components";
+import { AddButton, OsiagniecieFormModal, UserAchivHisTable } from "../../../Components";
 import UserPageLayout from "../../../Layout/UserPageLayout/UserPageRootLayout";
 import { colors } from "../../../Theme/variables";
+import { useState } from "react";
 
 export function UserAchivHisPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+  
+  const onModalClose = () => {
+    setModalOpen(false)
+  }
+  
+  const onAddButtonClick = () => {
+    setModalOpen(true)
+  }
 
   return (
     <UserPageLayout>
@@ -21,6 +31,8 @@ export function UserAchivHisPage() {
         }}>Historia Osiągnięć</p>
       </div>
       <UserAchivHisTable></UserAchivHisTable>
+      <AddButton onClick={onAddButtonClick} />
+      <OsiagniecieFormModal open={modalOpen} onClose={onModalClose} />
     </UserPageLayout>
   );
 }
